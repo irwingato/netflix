@@ -1,56 +1,57 @@
-const API_KEY = "5eb3da233d676a59a9f8ed314c9075b5"
-const API_DNS = "https://api.themoviedb.org/3"
+import axios from "axios";
+
+const API_DNS = "http://localhost:8080/Aplicacao_web_com_padroes_de_projeto";
 
 export const categories = [
     {
         name: "trending",
         title: "Em Alta",
-        path: "/trending/all/week?api_key="+API_KEY+"&language=pt-BR",
+        path: "/trending/all/week",
         isLarge: true,
     },
     {
         name: "netflixOriginals",
         title: "Originais Netflix",
-        path: "/discover/tv?api_key="+API_KEY+"&with_networks=213",
+        path: "/discover/netflixOriginals",
         isLarge: false,
     },
     {
         name: "topRated",
         title: "Populares",
-        path: "/movie/top_rated?api_key="+API_KEY+"&language=pt-BR",
+        path: "/movie/top_rated",
         isLarge: false,
     },
     {
         name: "comedy",
         title: "Comédias",
-        path: "/discover/tv?api_key="+API_KEY+"&with_genres=35",
+        path: "/discover/comedy",
         isLarge: false,
     },  
     {
         name: "romances",
         title: "Romances",
-        path: "/discover/tv?api_key="+API_KEY+"&with_genres=10749",
+        path: "/discover/romances",
         isLarge: false,
     },                
     {
         name: "documentaries",
         title: "Documentários",
-        path: "/discover/tv/api_key="+API_KEY+"&with_genres=99",
+        path: "/discover/documentaries",
         isLarge: false,
     }
-]
+];
 
 export const getMovies = async (path) => {
-    try{
-        let url = API_DNS + path
+  try {
+    const sessionID = sessionStorage.getItem("sessionID");
+    const url = `${API_DNS}${path}?sessionID=${encodeURIComponent(sessionID)}`;
+    console.log(url);
 
-        const response = fetch(url)
+    const response = await axios.get(url, { withCredentials: true });
 
-        return (await response).json()
-
-    }catch (error) {
-        console.log("error getMovies: ", error)
-    }
-    
-    
-}
+    return response.data;
+  } catch (error) {
+    console.log("error getMovies:", error);
+    throw error;
+  }
+};
